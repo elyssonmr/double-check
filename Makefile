@@ -12,3 +12,6 @@ flake8:
 
 fix-import-order:
 	@isort . -q --fass
+
+test:
+	@pytest --cov-config=.coveragerc
