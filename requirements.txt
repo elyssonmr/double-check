@@ -13,3 +13,4 @@ pycparser==2.20
 typing-extensions==3.10.0.2
 uvloop==0.16.0
 yarl==1.7.0
+marshmallow==3.14.0
