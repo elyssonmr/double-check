@@ -14,4 +14,4 @@ fix-import-order:
 	@isort . -q --fass
 
 test:
-	@pytest --cov-config=.coveragerc
+	@pytest -x --cov=double_check --cov-config=.coveragerc --cov-report=term .
