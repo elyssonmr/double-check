@@ -2,7 +2,7 @@ import pytest
 from marshmallow import Schema
 from marshmallow.exceptions import ValidationError
 
-from double_check.serializers import RequestTokenSerializer
+from double_check.request_token.serializers import RequestTokenSerializer
 
 
 @pytest.fixture

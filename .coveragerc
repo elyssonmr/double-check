@@ -1,5 +1,8 @@
 [run]
-omit = *test_*.py
+omit =
+    *test_*.py
+    double_check/application.py
+    double_check/handlers.py
 
 [report]
 fail_under = 90
