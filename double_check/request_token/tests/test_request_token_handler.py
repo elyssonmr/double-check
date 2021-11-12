@@ -32,7 +32,7 @@ def patch_validate_data():
 
 async def test_should_accept_valid_json(http_client, valid_data):
     response = await http_client.post('/', json=valid_data)
-    assert response.status == 200
+    assert response.status == 202
 
 
 async def test_should_raise_bad_request_for_invalid_json(http_client):
@@ -49,5 +49,13 @@ async def test_should_serialize_valid_data(
 ):
     response = await http_client.post('/', json=valid_data)
 
-    assert response.status == 200
+    assert response.status == 202
     patch_validate_data.assert_called_once_with(valid_data)
+
+
+async def test_should_respond_json(http_client, valid_data):
+    response = await http_client.post('/', json=valid_data)
+
+    assert response.status == 202
+    assert 'application/json' in response.headers['Content-Type']
+    assert await response.json()

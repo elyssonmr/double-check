@@ -1,10 +1,11 @@
 import json
 from json.decoder import JSONDecodeError
 
-from aiohttp.web import Request, Response, StreamResponse
+from aiohttp.web import json_response, Request, StreamResponse
 from aiohttp.web_exceptions import HTTPBadRequest
 
-from double_check.request_token.helpers import validate_request_token_data
+from double_check.request_token.helpers import (create_response,
+                                                validate_request_token_data)
 
 
 async def request_token(request: Request) -> StreamResponse:
@@ -17,4 +18,5 @@ async def request_token(request: Request) -> StreamResponse:
         )
 
     validate_request_token_data(request_body)
-    return Response()
+    token_response = create_response()
+    return json_response(data=token_response, status=202)
