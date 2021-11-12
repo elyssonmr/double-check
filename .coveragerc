@@ -1,8 +1,9 @@
 [run]
-include = double_check/
+omit =
+    *test_*.py
+    double_check/application.py
+    double_check/handlers.py
 
 [report]
 fail_under = 90
-omit = **/tests/*
-include = double_check/
 show_missing = true
