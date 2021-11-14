@@ -1,6 +1,9 @@
 runserver:
 	@python -m aiohttp.web -H localhost -P 8080 main:main
 
+runbot:
+	@python bot_handler.py
+
 install-dev:
 	@pip install -r requirements_dev.txt
 
