@@ -1,9 +1,8 @@
-[run]
-omit =
-    *test_*.py
-    double_check/application.py
-    double_check/handlers.py
-
 [report]
 fail_under = 90
 show_missing = true
+omit =
+    double_check/application.py
+    double_check/config.py
+    double_check/handlers.py
+    *test_*.py

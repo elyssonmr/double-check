@@ -1,3 +1,9 @@
+clean:
+	@find . -name "__pycache__" | xargs rm -rf
+	@find . -name "*.pyc" | xargs rm -rf
+	@find . -name ".pytest_cache" | xargs rm -rf
+	@find . -name ".coverage" | xargs rm -rf
+
 runserver:
 	@python -m aiohttp.web -H localhost -P 8080 main:main
 
