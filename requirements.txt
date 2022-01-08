@@ -16,3 +16,4 @@ marshmallow==3.14.0
 aiogram==2.16
 python-decouple==3.5
 aioredis==2.0.0
+ramos==1.4.0

@@ -3,9 +3,9 @@ from aiogram.types.message import ParseMode
 from aiogram.utils import markdown
 from aioredis import Redis
 
-from double_check.extensions.telegram_bot.bot import bot
+from double_check.extensions.telegram_bot.bot import telegram_bot
 
-dispatcher = Dispatcher(bot)
+dispatcher = Dispatcher(telegram_bot)
 redis_client = Redis()
 
 
