@@ -2,7 +2,8 @@ from unittest.mock import patch
 
 import pytest
 
-from double_check.extensions.telegram_bot.helpers import send_telegram_message
+from double_check.extensions.telegram_bot.helpers import (
+    get_chat_id, send_telegram_message)
 
 
 @pytest.fixture
@@ -14,18 +15,66 @@ def mock_send_message():
         yield patched
 
 
+@pytest.fixture
+def mock_redis_cache():
+    with patch(
+        'double_check.extensions.telegram_bot.helpers.redis_cache'
+    ) as patched:
+        yield patched
+
+
 async def test_should_call_telegram_send_message(
     mock_send_message,
     setup_future
 ):
+    chat_id = 12345
     mock_send_message.return_value = setup_future()
 
     await send_telegram_message(
-        12345,
+        chat_id,
         'This is your token'
     )
 
     mock_send_message.assert_called_once_with(
-        12345,
+        chat_id,
         'This is your token'
     )
+
+
+async def test_get_chat_id_should_call_cache_get(
+    mock_redis_cache,
+    setup_future
+):
+    chat_id = 12345
+    username = 'darth_user'
+    mock_redis_cache.get.return_value = setup_future(chat_id)
+
+    response = await get_chat_id(username)
+
+    assert response == chat_id
+    mock_redis_cache.get.assert_called_once_with(username)
+
+
+async def test_get_chat_id_should_return_int(
+    mock_redis_cache,
+    setup_future
+):
+    chat_id = b'12345'
+    username = 'darth_user'
+    mock_redis_cache.get.return_value = setup_future(chat_id)
+
+    response = await get_chat_id(username)
+
+    assert isinstance(response, int)
+
+
+async def test_get_chat_id_should_return_none_for_non_existing_chat(
+    mock_redis_cache,
+    setup_future
+):
+    username = 'darth_user'
+    mock_redis_cache.get.return_value = setup_future(None)
+
+    response = await get_chat_id(username)
+
+    assert response is None
