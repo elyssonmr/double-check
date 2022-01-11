@@ -1,10 +1,15 @@
 import json
 from json.decoder import JSONDecodeError
+from uuid import uuid4
 
 from aiohttp.web import json_response, Request, StreamResponse
 from aiohttp.web_exceptions import HTTPBadRequest
 
+from double_check import config
+from double_check.backends.pools.notification import NotificationPool
 from double_check.request_token.helpers import (create_response,
+                                                generate_user_token,
+                                                save_token_data,
                                                 validate_request_token_data)
 
 
@@ -17,6 +22,12 @@ async def request_token(request: Request) -> StreamResponse:
             content_type='application/json'
         )
 
-    validate_request_token_data(request_body)
-    token_response = create_response()
+    request_data = validate_request_token_data(request_body)
+    username = request_data['username']
+    user_token = generate_user_token()
+    client_token = str(uuid4())
+    backend = NotificationPool.get(config.NOTIFICATION_BACKEND)
+    await save_token_data(client_token, user_token)
+    await backend.send_token_to_customer(username, user_token)
+    token_response = create_response(client_token)
     return json_response(data=token_response, status=202)

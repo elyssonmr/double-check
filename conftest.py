@@ -2,12 +2,12 @@ from asyncio.futures import Future
 
 import pytest
 
-from double_check.backends.ramos import ramos
+from double_check.backends.ramos import configure_ramos
 
 
 @pytest.fixture(autouse=True)
 def config_ramos():
-    return ramos
+    configure_ramos()
 
 
 @pytest.fixture
