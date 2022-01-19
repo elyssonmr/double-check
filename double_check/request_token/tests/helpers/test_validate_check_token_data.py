@@ -1,4 +1,5 @@
 from uuid import uuid4
+
 import pytest
 from marshmallow.exceptions import ValidationError
 
