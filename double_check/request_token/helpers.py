@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 
 from double_check.cache import redis_cache
-from double_check.request_token.serializers import RequestTokenSerializer
+from double_check.request_token.serializers import CheckTokenSerializer, RequestTokenSerializer
 
 
 def validate_request_token_data(request_body: dict) -> dict:
@@ -25,3 +25,7 @@ def generate_user_token() -> str:
 
 async def save_token_data(client_token: str, user_token: str) -> None:
     await redis_cache.setex(client_token, 15, user_token)
+
+
+def validate_check_token_data(request_body: dict) -> dict:
+    return CheckTokenSerializer().load(request_body)
