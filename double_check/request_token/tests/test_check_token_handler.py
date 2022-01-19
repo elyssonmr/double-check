@@ -38,7 +38,16 @@ def patch_verify_token():
         yield patched
 
 
-async def test_should_return_json_with_status_200(http_client, valid_data):
+async def test_should_return_json_with_status_200(
+    http_client,
+    valid_data,
+    patch_validate_data,
+    patch_verify_token,
+    setup_future
+):
+    patch_validate_data.return_value = valid_data
+    patch_verify_token.return_value = setup_future(True)
+
     response = await http_client.post('/', json=valid_data)
 
     assert response.status == 200
