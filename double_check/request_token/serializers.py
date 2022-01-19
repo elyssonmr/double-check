@@ -8,5 +8,5 @@ class RequestTokenSerializer(Schema):
 
 
 class CheckTokenSerializer(Schema):
-    request_token = fields.Str(required=True)
+    token = fields.Str(required=True)
     user_token = fields.Str(required=True)

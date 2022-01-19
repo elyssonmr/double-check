@@ -8,7 +8,7 @@ from double_check.request_token.helpers import validate_check_token_data
 @pytest.fixture
 def valid_data():
     return {
-        'request_token': str(uuid4()),
+        'token': str(uuid4()),
         'user_token': '123456'
     }
 
@@ -32,5 +32,5 @@ def test_invalid_data_should_rise_validation_error(invalid_data):
         validate_check_token_data(invalid_data)
 
     errors = exp.value.messages
-    assert 'request_token' in errors
+    assert 'token' in errors
     assert 'user_token' in errors

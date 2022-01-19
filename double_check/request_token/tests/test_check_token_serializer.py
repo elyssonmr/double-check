@@ -9,7 +9,7 @@ from double_check.request_token.serializers import CheckTokenSerializer
 @pytest.fixture
 def valid_data():
     return {
-        'request_token': str(uuid4()),
+        'token': str(uuid4()),
         'user_token': '123456'
     }
 
@@ -33,5 +33,5 @@ def test_should_serialize(valid_data, serializer):
 def test_should_have_all_valid_fields(valid_data, serializer):
     serialized_data = serializer.load(valid_data)
 
-    assert serialized_data.get('request_token') == valid_data['request_token']
+    assert serialized_data.get('token') == valid_data['token']
     assert serialized_data.get('user_token') == valid_data['user_token']
