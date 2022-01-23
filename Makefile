@@ -24,3 +24,6 @@ fix-import-order:
 
 test:
 	@pytest -x --cov=double_check --cov-config=.coveragerc --cov-report=term .
+
+run-docker:
+	@docker-compose up -d

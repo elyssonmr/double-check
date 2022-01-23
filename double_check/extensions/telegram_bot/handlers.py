@@ -1,12 +1,11 @@
 from aiogram import Dispatcher, types
 from aiogram.types.message import ParseMode
 from aiogram.utils import markdown
-from aioredis import Redis
 
+from double_check.cache import redis_cache
 from double_check.extensions.telegram_bot.bot import telegram_bot
 
 dispatcher = Dispatcher(telegram_bot)
-redis_client = Redis()
 
 
 @dispatcher.message_handler(commands=['start'])
@@ -32,7 +31,7 @@ async def start_handler(message: types.Message):
         return
 
     chat_id = message.chat.id
-    await redis_client.set(username, chat_id)
+    await redis_cache.set(username, chat_id)
     greetings = (
         f'Hello {markdown.bold(username)}!!\n'
         f'Thank you for using {markdown.bold("Double Check Bot")}!\n'
@@ -46,7 +45,7 @@ async def start_handler(message: types.Message):
 async def stop_handler(message: types.Message):
     username = message.from_user.username
     if username:
-        await redis_client.delete(username)
+        await redis_cache.delete(username)
 
     stop_message = (
         'I\'ll miss you :(\n'

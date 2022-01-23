@@ -1,0 +1,12 @@
+.env
+.redis_data
+.pytest_cache
+.github
+.coverage
+.coveragerc
+.gitignore
+requirements_dev.txt
+__pycache__
+**/tests
+docker-compose.yml
+.git
