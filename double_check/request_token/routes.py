@@ -1,6 +1,6 @@
 from aiohttp.web import RouteDef
 
-from double_check.request_token.handlers import request_token, check_token
+from double_check.request_token.handlers import check_token, request_token
 
 ROUTES = [
     RouteDef(
