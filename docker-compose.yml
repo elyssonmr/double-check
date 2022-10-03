@@ -1,21 +1,41 @@
-version: '3'
+version: "3"
 
 services:
   redis_cache:
-    image: 'redis'
-    container_name: 'double_check_redis'
+    image: "redis"
+    container_name: "double_check_redis"
     ports:
       - "6379:6379"
     command: "redis-server --save 60 1 --loglevel warning"
     volumes:
-      - './.redis_data:/data'
+      - "./.redis_data:/data"
 
-  bot_handler:
+  api:
     build: .
-    container_name: 'double_check_bot_handler'
+    container_name: "double_check_api"
+    ports:
+      - "8080:8080"
+    command: "python -m aiohttp.web -H 0.0.0.0 -P 8080 main:main"
+    env_file:
+      - .env
     environment:
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-      - REDIS_URL=redis://redis_cache:6379
-    command: 'python bot_handler.py'
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      REDIS_URL: "redis://redis_cache:6379/0"
     depends_on:
       - redis_cache
+    volumes:
+      - './:/app/double_check'
+
+  bot:
+    build: .
+    container_name: "double_check_bot"
+    command: "python bot_handler.py"
+    env_file:
+      - .env
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      REDIS_URL: "redis://redis_cache:6379/0"
+    depends_on:
+      - redis_cache
+    volumes:
+      - './:/app/double_check'

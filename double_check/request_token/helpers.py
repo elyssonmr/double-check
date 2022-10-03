@@ -25,7 +25,7 @@ def generate_user_token() -> str:
 
 
 async def save_token_data(client_token: str, user_token: str) -> None:
-    await redis_cache.setex(client_token, 15, user_token)
+    await redis_cache.setex(client_token, 60, user_token)
 
 
 def validate_check_token_data(request_body: dict) -> dict:
