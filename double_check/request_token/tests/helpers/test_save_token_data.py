@@ -19,4 +19,4 @@ async def test_should_call_cache_set(mock_cache, setup_future):
 
     await save_token_data(client_token, user_token)
 
-    mock_cache.setex.assert_called_once_with(client_token, 15, user_token)
+    mock_cache.setex.assert_called_once_with(client_token, 60, user_token)
