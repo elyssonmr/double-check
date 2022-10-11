@@ -7,7 +7,7 @@ cffi==1.15.0
 chardet==4.0.0
 idna==3.3
 multidict==5.2.0
-pycares==4.1.2
+pycares==4.2.0
 pycparser==2.20
 typing-extensions==3.10.0.2
 uvloop==0.16.0
