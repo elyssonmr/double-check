@@ -2,6 +2,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from aiohttp.web import Application
+from marshmallow.exceptions import ValidationError
 
 from double_check import config
 from double_check.request_token.handlers import request_token
@@ -20,6 +21,13 @@ def valid_data():
         'site_name': 'Double Check Login',
         'username': 'double_check_username',
         'action': 'Login Website'
+    }
+
+
+@pytest.fixture
+def invalid_data():
+    return {
+        'invalid': 'data'
     }
 
 
@@ -118,6 +126,34 @@ async def test_should_serialize_valid_data(
 
     assert response.status == 202
     patch_validate_data.assert_called_once_with(valid_data)
+
+
+async def test_should_return_bad_request_invalid_data(
+    http_client,
+    invalid_data,
+    patch_validate_data,
+    patch_save_token_data,
+    patch_send_token_to_customer
+):
+    patch_validate_data.side_effect = ValidationError({
+        'invalid': [
+            'Unknown field.'
+        ]
+    })
+    response = await http_client.post('/', json=invalid_data)
+
+    assert response.status == 400
+    expected_response = {
+        'error': 'Invalid Data',
+        'errors': {
+            'invalid': [
+                'Unknown field.'
+            ]
+        }
+    }
+    assert await response.json() == expected_response
+    patch_validate_data.assert_called_once_with(invalid_data)
+    patch_send_token_to_customer.assert_not_called()
 
 
 async def test_should_respond_json(

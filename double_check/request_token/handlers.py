@@ -25,7 +25,18 @@ async def request_token(request: Request) -> StreamResponse:
             content_type='application/json'
         )
 
-    request_data = validate_request_token_data(request_body)
+    try:
+        request_data = validate_request_token_data(request_body)
+    except ValidationError as validation_error:
+        response = {
+            'error': 'Invalid Data',
+            'errors': validation_error.messages
+        }
+        raise HTTPBadRequest(
+            text=json.dumps(response),
+            content_type='application/json'
+        )
+
     username = request_data['username']
     user_token = generate_user_token()
     client_token = str(uuid4())
