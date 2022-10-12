@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import pytest
 from aiohttp.web import Application
+from marshmallow.exceptions import ValidationError
 
 from double_check.request_token.handlers import check_token
 
@@ -19,6 +20,14 @@ def valid_data():
     return {
         'token': str(uuid4()),
         'user_token': '123456'
+    }
+
+
+@pytest.fixture
+def invalid_data():
+    return {
+        'invalid': 'value',
+        'data': 'invalid_value'
     }
 
 
@@ -75,6 +84,33 @@ async def test_should_serialize_valid_data(
 
     assert response.status == 200
     patch_validate_data.assert_called_once_with(valid_data)
+
+
+async def test_should_return_bad_request_for_invalid_data(
+    http_client,
+    invalid_data,
+    patch_validate_data,
+    patch_verify_token
+):
+    patch_validate_data.side_effect = ValidationError({
+        "invalid": [
+            "Unknown field."
+        ]
+    })
+    response = await http_client.post('/', json=invalid_data)
+
+    assert response.status == 400
+    expected_response = {
+        "error": "Invalid Data",
+        "errors": {
+            "invalid": [
+                "Unknown field."
+            ]
+        }
+    }
+    assert await response.json() == expected_response
+    patch_validate_data.assert_called_once_with(invalid_data)
+    patch_verify_token.assert_not_called()
 
 
 async def test_should_verify_token(

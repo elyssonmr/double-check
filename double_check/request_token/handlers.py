@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from aiohttp.web import json_response, Request, StreamResponse
 from aiohttp.web_exceptions import HTTPBadRequest
+from marshmallow.exceptions import ValidationError
 
 from double_check import config
 from double_check.backends.pools.notification import NotificationPool
@@ -43,8 +44,17 @@ async def check_token(request: Request) -> StreamResponse:
             text=json.dumps({'error': 'Invalid Json'}),
             content_type='application/json'
         )
-
-    request_data = validate_check_token_data(request_body)
+    try:
+        request_data = validate_check_token_data(request_body)
+    except ValidationError as validation_error:
+        response = {
+            'error': 'Invalid Data',
+            'errors': validation_error.messages
+        }
+        raise HTTPBadRequest(
+            text=json.dumps(response),
+            content_type='application/json'
+        )
 
     request_token = request_data['token']
     user_token = request_data['user_token']
