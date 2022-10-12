@@ -1,12 +1,11 @@
+import aioredis
 from aiogram import Dispatcher, types
 from aiogram.types.message import ParseMode
 from aiogram.utils import markdown
-import aioredis
-
-from double_check.cache import redis_cache
-from double_check.extensions.telegram_bot.bot import telegram_bot
 
 from double_check import config
+from double_check.cache import redis_cache
+from double_check.extensions.telegram_bot.bot import telegram_bot
 
 dispatcher = Dispatcher(telegram_bot)
 redis_client = aioredis.from_url(config.REDIS_URL)
