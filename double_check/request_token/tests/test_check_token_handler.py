@@ -93,18 +93,18 @@ async def test_should_return_bad_request_for_invalid_data(
     patch_verify_token
 ):
     patch_validate_data.side_effect = ValidationError({
-        "invalid": [
-            "Unknown field."
+        'invalid': [
+            'Unknown field.'
         ]
     })
     response = await http_client.post('/', json=invalid_data)
 
     assert response.status == 400
     expected_response = {
-        "error": "Invalid Data",
-        "errors": {
-            "invalid": [
-                "Unknown field."
+        'error': 'Invalid Data',
+        'errors': {
+            'invalid': [
+                'Unknown field.'
             ]
         }
     }
