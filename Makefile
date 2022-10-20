@@ -27,3 +27,9 @@ test:
 
 run-docker:
 	@docker-compose up -d
+
+create-fragment:
+	@towncrier create $@
+
+create-changelog:
+	@towncrier build
