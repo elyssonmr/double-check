@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -23,12 +23,8 @@ def mock_redis_cache():
         yield patched
 
 
-async def test_should_call_telegram_send_message(
-    mock_send_message,
-    setup_future
-):
+async def test_should_call_telegram_send_message(mock_send_message):
     chat_id = 12345
-    mock_send_message.return_value = setup_future()
 
     await send_telegram_message(
         chat_id,
@@ -41,13 +37,10 @@ async def test_should_call_telegram_send_message(
     )
 
 
-async def test_get_chat_id_should_call_cache_get(
-    mock_redis_cache,
-    setup_future
-):
+async def test_get_chat_id_should_call_cache_get(mock_redis_cache):
     chat_id = 12345
     username = 'darth_user'
-    mock_redis_cache.get.return_value = setup_future(chat_id)
+    mock_redis_cache.get = AsyncMock(return_value=chat_id)
 
     response = await get_chat_id(username)
 
@@ -56,12 +49,11 @@ async def test_get_chat_id_should_call_cache_get(
 
 
 async def test_get_chat_id_should_return_int(
-    mock_redis_cache,
-    setup_future
+    mock_redis_cache
 ):
     chat_id = b'12345'
     username = 'darth_user'
-    mock_redis_cache.get.return_value = setup_future(chat_id)
+    mock_redis_cache.get = AsyncMock(return_value=chat_id)
 
     response = await get_chat_id(username)
 
@@ -69,11 +61,10 @@ async def test_get_chat_id_should_return_int(
 
 
 async def test_get_chat_id_should_return_none_for_non_existing_chat(
-    mock_redis_cache,
-    setup_future
+    mock_redis_cache
 ):
     username = 'darth_user'
-    mock_redis_cache.get.return_value = setup_future(None)
+    mock_redis_cache.get = AsyncMock(return_value=None)
 
     response = await get_chat_id(username)
 

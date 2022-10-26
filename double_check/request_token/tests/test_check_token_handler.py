@@ -52,10 +52,9 @@ async def test_should_return_json_with_status_200(
     valid_data,
     patch_validate_data,
     patch_verify_token,
-    setup_future
 ):
     patch_validate_data.return_value = valid_data
-    patch_verify_token.return_value = setup_future(True)
+    patch_verify_token.return_value = True
 
     response = await http_client.post('/', json=valid_data)
 
@@ -74,11 +73,10 @@ async def test_should_serialize_valid_data(
     http_client,
     valid_data,
     patch_validate_data,
-    patch_verify_token,
-    setup_future
+    patch_verify_token
 ):
     patch_validate_data.return_value = valid_data
-    patch_verify_token.return_value = setup_future(True)
+    patch_verify_token.return_value = True
 
     response = await http_client.post('/', json=valid_data)
 
@@ -117,11 +115,10 @@ async def test_should_verify_token(
     http_client,
     valid_data,
     patch_validate_data,
-    patch_verify_token,
-    setup_future
+    patch_verify_token
 ):
     patch_validate_data.return_value = valid_data
-    patch_verify_token.return_value = setup_future(True)
+    patch_verify_token.return_value = True
 
     response = await http_client.post('/', json=valid_data)
 
@@ -138,11 +135,10 @@ async def test_should_check_token(
     valid_data,
     patch_validate_data,
     patch_verify_token,
-    setup_future,
     valid_token
 ):
     patch_validate_data.return_value = valid_data
-    patch_verify_token.return_value = setup_future(valid_token)
+    patch_verify_token.return_value = valid_token
 
     response = await http_client.post('/', json=valid_data)
 
