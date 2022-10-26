@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from aiohttp.web import Application
@@ -55,6 +55,7 @@ def patch_notification_pool(mock_notification_backend):
 
 @pytest.fixture
 def patch_send_token_to_customer(mock_notification_backend):
+    mock_notification_backend.send_token_to_customer = AsyncMock()
     return mock_notification_backend.send_token_to_customer
 
 
@@ -96,11 +97,8 @@ async def test_should_accept_valid_json(
     http_client,
     valid_data,
     patch_save_token_data,
-    patch_send_token_to_customer,
-    setup_future
+    patch_send_token_to_customer
 ):
-    patch_save_token_data.return_value = setup_future()
-    patch_send_token_to_customer.return_value = setup_future()
     response = await http_client.post('/', json=valid_data)
     assert response.status == 202
 
@@ -118,10 +116,7 @@ async def test_should_serialize_valid_data(
     patch_validate_data,
     patch_save_token_data,
     patch_send_token_to_customer,
-    setup_future
 ):
-    patch_save_token_data.return_value = setup_future()
-    patch_send_token_to_customer.return_value = setup_future()
     response = await http_client.post('/', json=valid_data)
 
     assert response.status == 202
@@ -154,6 +149,7 @@ async def test_should_return_bad_request_invalid_data(
     assert await response.json() == expected_response
     patch_validate_data.assert_called_once_with(invalid_data)
     patch_send_token_to_customer.assert_not_called()
+    patch_save_token_data.assert_not_called()
 
 
 async def test_should_respond_json(
@@ -161,10 +157,7 @@ async def test_should_respond_json(
     valid_data,
     patch_save_token_data,
     patch_send_token_to_customer,
-    setup_future
 ):
-    patch_save_token_data.return_value = setup_future()
-    patch_send_token_to_customer.return_value = setup_future()
     response = await http_client.post('/', json=valid_data)
 
     assert response.status == 202
@@ -177,14 +170,10 @@ async def test_should_call_mocks_correctly(
     valid_data,
     patch_save_token_data,
     patch_send_token_to_customer,
-    setup_future,
     patch_notification_pool,
     client_token,
     user_token
 ):
-    patch_save_token_data.return_value = setup_future()
-    patch_send_token_to_customer.return_value = setup_future()
-
     await http_client.post('/', json=valid_data)
 
     patch_notification_pool.get.assert_called_once_with(

@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 import pytest
@@ -12,8 +12,8 @@ def mock_cache():
         yield patched
 
 
-async def test_should_call_cache_set(mock_cache, setup_future):
-    mock_cache.setex.return_value = setup_future()
+async def test_should_call_cache_set(mock_cache):
+    mock_cache.setex = AsyncMock()
     client_token = str(uuid4())
     user_token = '123456'
 

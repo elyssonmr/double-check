@@ -29,14 +29,12 @@ def mock_get_chat_id():
 async def test_send_token_should_call_send_telegram_message(
     backend,
     mock_send_telegram_message,
-    mock_get_chat_id,
-    setup_future
+    mock_get_chat_id
 ):
     chat_id = b'12345'
     username = 'test_username'
     token = 'token123'
-    mock_send_telegram_message.return_value = setup_future()
-    mock_get_chat_id.return_value = setup_future(chat_id)
+    mock_get_chat_id.return_value = chat_id
 
     await backend.send_token_to_customer(
         username,
@@ -52,14 +50,12 @@ async def test_send_token_should_call_send_telegram_message(
 async def test_send_token_should_get_chat_id(
     backend,
     mock_send_telegram_message,
-    mock_get_chat_id,
-    setup_future
+    mock_get_chat_id
 ):
     chat_id = b'12345'
     username = 'darth_username'
     token = 'token123'
-    mock_get_chat_id.return_value = setup_future(chat_id)
-    mock_send_telegram_message.return_value = setup_future()
+    mock_get_chat_id.return_value = chat_id
 
     await backend.send_token_to_customer(
         username,
@@ -72,12 +68,11 @@ async def test_send_token_should_get_chat_id(
 async def test_send_token_should_rise_exeception_when_user_does_not_exists(
     backend,
     mock_send_telegram_message,
-    mock_get_chat_id,
-    setup_future
+    mock_get_chat_id
 ):
     username = 'darth_username'
     token = 'token123'
-    mock_get_chat_id.return_value = setup_future(None)
+    mock_get_chat_id.return_value = None
 
     with pytest.raises(Exception):
         await backend.send_token_to_customer(
