@@ -1,8 +1,13 @@
 name: Continuos Integration
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
 jobs:
   Check-Lint:
     runs-on: ubuntu-latest
+    if: github.ref_name != 'main'
     steps:
       - uses: actions/checkout@v2
         name: Checkout
@@ -21,6 +26,7 @@ jobs:
 
   Run-Tests:
     runs-on: ubuntu-latest
+    if: github.ref_name != 'main'
     steps:
       - uses: actions/checkout@v2
         name: Checkout
