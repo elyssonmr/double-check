@@ -33,3 +33,12 @@ create-fragment:
 
 create-changelog:
 	@towncrier build
+
+bump-patch:
+	@bump2version patch
+
+bump-minor:
+	@bump2version minor
+
+bump-major:
+	@bump2version major
