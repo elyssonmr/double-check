@@ -37,12 +37,13 @@ async def request_token(request: Request) -> StreamResponse:
             content_type='application/json'
         )
 
+    action = request_data['action']
     username = request_data['username']
     user_token = generate_user_token()
     client_token = str(uuid4())
     backend = NotificationPool.get(config.NOTIFICATION_BACKEND)
     await save_token_data(client_token, user_token)
-    await backend.send_token_to_customer(username, user_token)
+    await backend.send_token_to_customer(action, username, user_token)
     token_response = create_response(client_token)
     return json_response(data=token_response, status=202)
 

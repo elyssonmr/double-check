@@ -11,6 +11,7 @@ def base_backend():
 async def test_send_token_to_customer_should_not_implemented(base_backend):
     with pytest.raises(NotImplementedError) as err:
         await base_backend.send_token_to_customer(
+            'action',
             'chat_id',
             'username',
             'token'

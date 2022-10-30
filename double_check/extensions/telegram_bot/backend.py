@@ -11,11 +11,16 @@ class TelegramBotNotificationBackend(
 ):
     id = 'telegram_notification'
 
-    async def send_token_to_customer(self, username: str, token: str):
+    async def send_token_to_customer(
+            self,
+            action: str,
+            username: str,
+            token: str
+    ):
         chat_id = await get_chat_id(username)
         if not chat_id:
             raise Exception()
 
-        message = f'Hello {username}. Your token is: {token}'
+        message = f'Hello {username}. Action: {action} Your token is: {token}'
 
         await send_telegram_message(chat_id, message)
