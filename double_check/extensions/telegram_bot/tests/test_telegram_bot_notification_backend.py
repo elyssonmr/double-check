@@ -19,6 +19,14 @@ def mock_send_telegram_message():
 
 
 @pytest.fixture
+def mock_telegram_get_updates():
+    with patch(
+        'double_check.extensions.telegram_bot.backend.telegram_bot.get_updates'
+    ) as patched:
+        yield patched
+
+
+@pytest.fixture
 def mock_get_chat_id():
     with patch(
         'double_check.extensions.telegram_bot.backend.get_chat_id'
@@ -65,9 +73,34 @@ async def test_send_token_should_get_chat_id(
     mock_get_chat_id.assert_called_once_with(username)
 
 
+async def test_send_token_should_recover_chat_id_from_update(
+    backend,
+    mock_send_telegram_message,
+    mock_telegram_get_updates,
+    mock_get_chat_id
+):
+    chat_id = b'12345'
+    username = 'darth_username'
+    token = 'token123'
+    mock_telegram_get_updates.return_value = [
+        {
+            'chat': {'id': chat_id},
+            'from': {'username': username}
+        }
+    ]
+
+    await backend.send_token_to_customer(
+        username,
+        token
+    )
+
+    mock_get_chat_id.assert_called_once_with(username)
+
+
 async def test_send_token_should_rise_exeception_when_user_does_not_exists(
     backend,
     mock_send_telegram_message,
+    mock_telegram_get_updates,
     mock_get_chat_id
 ):
     username = 'darth_username'
