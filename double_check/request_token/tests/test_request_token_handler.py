@@ -183,6 +183,7 @@ async def test_should_call_mocks_correctly(
         client_token, user_token
     )
     patch_send_token_to_customer.assert_called_once_with(
+        valid_data['action'],
         valid_data['username'],
         user_token
     )

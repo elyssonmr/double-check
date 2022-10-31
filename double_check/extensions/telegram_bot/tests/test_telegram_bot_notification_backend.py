@@ -31,19 +31,21 @@ async def test_send_token_should_call_send_telegram_message(
     mock_send_telegram_message,
     mock_get_chat_id
 ):
+    action = 'Login'
     chat_id = b'12345'
     username = 'test_username'
     token = 'token123'
     mock_get_chat_id.return_value = chat_id
 
     await backend.send_token_to_customer(
+        action,
         username,
         token
     )
 
     mock_send_telegram_message.assert_called_once_with(
         chat_id,
-        f'Hello {username}. Your token is: {token}'
+        f'Hello {username}. Action: {action} Your token is: {token}'
     )
 
 
@@ -52,12 +54,14 @@ async def test_send_token_should_get_chat_id(
     mock_send_telegram_message,
     mock_get_chat_id
 ):
+    action = 'Login'
     chat_id = b'12345'
     username = 'darth_username'
     token = 'token123'
     mock_get_chat_id.return_value = chat_id
 
     await backend.send_token_to_customer(
+        action,
         username,
         token
     )
