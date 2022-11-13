@@ -49,3 +49,14 @@ async def test_should_compare_different_tokens(mock_cache):
     response = await verify_token(client_token, user_token)
 
     assert response is False
+
+
+async def test_should_delete_token(mock_cache):
+    user_token = '123456'
+    mock_cache.get = AsyncMock(return_value='123456'.encode())
+    mock_cache.delete = AsyncMock()
+    client_token = str(uuid4())
+
+    await verify_token(client_token, user_token)
+
+    mock_cache.delete.assert_called_once_with(client_token)
