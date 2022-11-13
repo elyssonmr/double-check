@@ -74,14 +74,19 @@ async def test_send_token_should_rise_exeception_when_user_does_not_exists(
     mock_send_telegram_message,
     mock_get_chat_id
 ):
+    action = 'Login'
     username = 'darth_username'
     token = 'token123'
     mock_get_chat_id.return_value = None
 
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as raised_exp:
         await backend.send_token_to_customer(
+            action,
             username,
             token
         )
 
+    exp = raised_exp.value
+    assert isinstance(exp, Exception)
+    assert str(exp) == ''
     mock_send_telegram_message.assert_not_called()

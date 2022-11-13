@@ -33,9 +33,13 @@ def validate_check_token_data(request_body: dict) -> dict:
 
 
 async def verify_token(client_token: str, user_token: str) -> bool:
+    token_valid = False
     token = await redis_cache.get(client_token)
 
     if token:
-        return token.decode('utf-8') == user_token
+        token_valid = token.decode('utf-8') == user_token
 
-    return False
+    if token_valid:
+        await redis_cache.delete(client_token)
+
+    return token_valid
