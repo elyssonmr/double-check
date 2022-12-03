@@ -1,0 +1,104 @@
+openapi: 3.0.3
+info:
+  title: Double check
+  description: Double check is an easy to use service, that enables multifactor API for your applications using just an API. Your application user just needs to interact with **Telegram Bot** inorder to receive the access token.
+  version: 1.0.0
+servers: 
+    - url : https://localhost:8080
+tags:
+  - name: Token
+    description: To get or check token
+
+paths:
+  /request_token:
+    post:
+      tags: 
+        - Token
+      description: Get Token
+      requestBody:
+        description: Generate user's token
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                site_name:
+                  type: string
+                username:
+                  type: string
+                action:
+                  type: string
+
+      responses:
+        '202':
+            description: Success
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    token: 
+                      type: string
+                    ttl:
+                      type: string
+                    status:
+                      type: string
+
+        '400':
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                    errors:
+                      type: string
+
+
+  /check_token:
+    post:
+      tags:
+        - Token
+      description: Check token
+      requestBody:
+        description: Check token status
+        required: true  
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                token:  
+                  type: string
+                user_token:
+                  type: string
+      responses:  
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  token:  
+                    type: string
+                  is_valid:
+                    type: boolean
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  errors:
+                    type: string
+
+      
+
+    
