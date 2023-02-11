@@ -1,6 +1,6 @@
 -r requirements.txt
 
-ipython==7.31.1
+ipython==8.10.0
 flake8==4.0.1
 isort==5.9.3
 pytest==6.2.5
