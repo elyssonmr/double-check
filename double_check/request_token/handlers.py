@@ -8,6 +8,8 @@ from marshmallow.exceptions import ValidationError
 
 from double_check import config
 from double_check.backends.pools.notification import NotificationPool
+from double_check.request_token.exceptions import (InvalidDataException,
+                                                   InvalidJsonException)
 from double_check.request_token.helpers import (create_response,
                                                 generate_user_token,
                                                 save_token_data,
@@ -20,21 +22,18 @@ async def request_token(request: Request) -> StreamResponse:
     try:
         request_body = await request.json()
     except JSONDecodeError:
-        raise HTTPBadRequest(
-            text=json.dumps({'error': 'Invalid Json'}),
-            content_type='application/json'
+        raise InvalidJsonException(
+            message='Invalid Json format',
+            error_code='invalid_data'
         )
 
     try:
         request_data = validate_request_token_data(request_body)
     except ValidationError as validation_error:
-        response = {
-            'error': 'Invalid Data',
-            'errors': validation_error.messages
-        }
-        raise HTTPBadRequest(
-            text=json.dumps(response),
-            content_type='application/json'
+        raise InvalidDataException(
+            message='Invalid Input Data',
+            error_code='invalid_data',
+            info=validation_error.messages
         )
 
     action = request_data['action']
