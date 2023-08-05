@@ -5,12 +5,13 @@ from aiohttp.web import Application
 from marshmallow.exceptions import ValidationError
 
 from double_check import config
+from double_check.base.middlewares import exception_middleware
 from double_check.request_token.handlers import request_token
 
 
 @pytest.fixture
 def http_client(aiohttp_client, loop):
-    app = Application()
+    app = Application(middlewares=[exception_middleware])
     app.router.add_post('/', request_token)
     return loop.run_until_complete(aiohttp_client(app))
 
@@ -107,7 +108,10 @@ async def test_should_raise_bad_request_for_invalid_json(http_client):
     response = await http_client.post('/')
 
     assert response.status == 400
-    assert await response.json() == {'error': 'Invalid Json'}
+    assert await response.json() == {
+        'message': 'Invalid Json format',
+        'error_code': 'invalid_data'
+    }
 
 
 async def test_should_serialize_valid_data(
@@ -139,8 +143,9 @@ async def test_should_return_bad_request_invalid_data(
 
     assert response.status == 400
     expected_response = {
-        'error': 'Invalid Data',
-        'errors': {
+        'message': 'Invalid Input Data',
+        'error_code': 'invalid_data',
+        'info': {
             'invalid': [
                 'Unknown field.'
             ]
